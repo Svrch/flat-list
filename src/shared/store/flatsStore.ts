@@ -118,6 +118,15 @@ export const useFlatsStore = defineStore('flats', () => {
     applyFilters()
   }
 
+  const resetFilters = () => {
+    filterState.value = {
+      rooms: [],
+      priceRange: [0, 25000000],
+      areaRange: [0, 200],
+    }
+    applyFilters()
+  }
+
   const updateSort = (newSort: Partial<ISortOptions>) => {
     sortOptions.value = { ...sortOptions.value, ...newSort }
     applyFilters()
@@ -137,5 +146,6 @@ export const useFlatsStore = defineStore('flats', () => {
     updateFilter,
     updateSort,
     applyFilters,
+    resetFilters,
   }
 })

@@ -3,22 +3,10 @@ import type { IFlat, ISortOptions } from '@/shared/types/flat.interface'
 import FlatSort from '@/widgets/FlatsList/ui/FlatSort.vue'
 import FlatCard from '@/widgets/FlatsList/ui/FlatCard.vue'
 
-interface Props {
+const props = defineProps<{
   flats: IFlat[]
   sortOptions: ISortOptions
-}
-
-interface Emits {
-  (event: 'flat-click', flat: IFlat): void
-  (event: 'update-sort', options: Partial<ISortOptions>): void
-}
-
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
-
-const handleSortUpdate = (options: Partial<ISortOptions>) => {
-  emit('update-sort', options)
-}
+}>()
 </script>
 
 <template>
@@ -35,19 +23,13 @@ const handleSortUpdate = (options: Partial<ISortOptions>) => {
 
     <!-- Список квартир -->
     <div v-else class="flats-list__grid">
-      <FlatSort
-        :sort-options="sortOptions"
-        @update-sort="handleSortUpdate"
-      />
+      <FlatSort :sort-options="sortOptions" />
       <div
         v-for="flat in props.flats"
         :key="flat.id"
         class="flats-list__item"
       >
-        <FlatCard
-          :flat="flat"
-          @click="$emit('flat-click', flat)"
-        />
+        <FlatCard :flat="flat" />
       </div>
     </div>
   </div>

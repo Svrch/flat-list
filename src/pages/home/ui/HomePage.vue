@@ -2,12 +2,12 @@
 import { FlatsList } from '@/widgets/FlatsList'
 import { useFlatsStore } from '@/shared/store/flatsStore'
 import FlatsPagination from '@/widgets/FlatsList/ui/FlatsPagination.vue'
-import type { IFlat, ISortOptions } from '@/shared/types/flat.interface'
+import FlatsFilter from '@/widgets/FlatsList/ui/FlatsFilter.vue'
 
 const store = useFlatsStore()
-const { displayedFlats, isLoading, error, hasMoreFlats, sortOptions } = storeToRefs(store)
+const { displayedFlats, isLoading, error, hasMoreFlats, sortOptions, filterState } = storeToRefs(store)
 
-const { loadMore, updateSort } = store
+const { loadMore } = store
 
 const isLoadingPagination = ref(false)
 
@@ -21,14 +21,6 @@ const handleLoadMore = async () => {
   }
 }
 
-const handleFlatClick = (flat: IFlat) => {
-  console.log('Квартира clicked:', flat)
-}
-
-const handleSortUpdate = (options: Partial<ISortOptions>) => {
-  updateSort(options)
-}
-
 onMounted(() => {
   store.fetchFlats()
 })
@@ -36,7 +28,6 @@ onMounted(() => {
 
 <template>
   <div class="flats-page">
-    <FlatsFilter />
     <div class="flats-container">
       <!-- Состояние загрузки -->
       <div v-if="isLoading && displayedFlats.length === 0" class="loading">
@@ -53,8 +44,6 @@ onMounted(() => {
         <FlatsList
           :flats="displayedFlats"
           :sort-options="sortOptions"
-          @flat-click="handleFlatClick"
-          @update-sort="handleSortUpdate"
         />
 
         <!-- Кнопка загрузки -->
@@ -70,14 +59,16 @@ onMounted(() => {
         </div>
       </template>
     </div>
-    <BackToTop />
+    <FlatsFilter :filter-state="filterState" />
   </div>
+  <BackToTop />
 </template>
 
 <style lang="scss" scoped>
 .flats-page {
   display: flex;
   justify-content: center;
+  gap: 48px;
   padding: 48px;
 }
 

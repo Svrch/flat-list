@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { UiButton } from '@/shared/components'
+
 defineProps<{ loading?: boolean }>()
 
 defineEmits<{ 'load-more': [] }>()
@@ -6,13 +8,19 @@ defineEmits<{ 'load-more': [] }>()
 
 <template>
   <div class="pagination">
-    <button
+    <UiButton
       :disabled="loading"
       class="load-more-btn"
       @click="$emit('load-more')"
     >
       <span v-if="!loading">Показать ещё 20</span>
       <span v-else>Загрузка...</span>
-    </button>
+    </UiButton>
   </div>
 </template>
+
+<style scoped lang="scss">
+.pagination {
+  max-width: 250px;
+}
+</style>

@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import type { ISortOptions } from '@/shared/types/flat.interface'
+import { useFlatsStore } from '@/shared/store/flatsStore'
+
+const store = useFlatsStore()
 
 const props = defineProps<{
   sortOptions: ISortOptions
 }>()
 
-const emit = defineEmits<{
-  (event: 'update-sort', options: Partial<ISortOptions>): void
-}>()
-
 const handleSort = (field: 'price' | 'area' | 'floor') => {
   if (props.sortOptions.field === field) {
     // Если уже сортируем по этому полю, меняем направление
-    emit('update-sort', {
+    store.updateSort({
       direction: props.sortOptions.direction === 'asc' ? 'desc' : 'asc',
     })
   }
   else {
     // Если новое поле, сортируем по возрастанию
-    emit('update-sort', {
+    store.updateSort({
       field,
       direction: 'asc',
     })
