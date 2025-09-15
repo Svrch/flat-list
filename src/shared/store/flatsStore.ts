@@ -35,7 +35,7 @@ export const useFlatsStore = defineStore('flats', () => {
       await delay(500 + Math.random() * 1000)
 
       const data = await $fetch<{ flats: IFlat[] }>('/data/flats.json')
-      allFlats.value = data.flats // Теперь берем data.flats
+      allFlats.value = data.flats
       applyFilters()
     }
     catch (error) {
@@ -118,20 +118,10 @@ export const useFlatsStore = defineStore('flats', () => {
     applyFilters()
   }
 
-  const resetFilters = () => {
-    filterState.value = {
-      rooms: [],
-      priceRange: [0, 25000000],
-      areaRange: [0, 200],
-    }
-    applyFilters()
-  }
-
   const updateSort = (newSort: Partial<ISortOptions>) => {
     sortOptions.value = { ...sortOptions.value, ...newSort }
     applyFilters()
   }
-
   return {
     allFlats,
     filteredFlats,
@@ -146,6 +136,5 @@ export const useFlatsStore = defineStore('flats', () => {
     updateFilter,
     updateSort,
     applyFilters,
-    resetFilters,
   }
 })

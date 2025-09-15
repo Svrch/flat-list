@@ -1,10 +1,6 @@
 <template>
   <div>
-    <header>Заголовок сайта</header>
-    <main>
-      <NuxtPage />
-    </main>
-    <footer>Подвал сайта</footer>
+    <NuxtPage />
   </div>
 </template>
 

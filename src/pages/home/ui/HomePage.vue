@@ -59,9 +59,11 @@ onMounted(() => {
         </div>
       </template>
     </div>
-    <FlatsFilter :filter-state="filterState" />
+    <div class="flats-filter-block">
+      <FlatsFilter v-if="store.allFlats.length" :filter-state="filterState" />
+    </div>
   </div>
-  <BackToTop />
+<!--  <BackToTop /> -->
 </template>
 
 <style lang="scss" scoped>
@@ -70,10 +72,17 @@ onMounted(() => {
   justify-content: center;
   gap: 48px;
   padding: 48px;
+  height: calc(100vh - 96px);
+  overflow-y: scroll;
 }
 
 .flats-container {
   flex: 1;
   max-width: 1440px;
+}
+
+.flats-filter-block {
+  position: sticky;
+  top: 0;
 }
 </style>
