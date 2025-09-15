@@ -96,11 +96,13 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.scroll-top__icon {
-  z-index: 10;
-  font-size: 24px;
-}
 .scroll-top {
-  background-color: #e8e8e8;
+  background-color: #95D0A1;
+
+  .scroll-top__icon {
+    color: white;
+    z-index: 10;
+    font-size: 24px;
+  }
 }
 </style>

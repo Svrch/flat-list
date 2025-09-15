@@ -217,6 +217,10 @@ onMounted(() => {
   &__reset {
     font-size: 14px;
     font-weight: 400;
+
+    &:hover {
+      color: #3EB57C;
+    }
   }
 }
 

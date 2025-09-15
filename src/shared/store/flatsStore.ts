@@ -71,7 +71,7 @@ export const useFlatsStore = defineStore('flats', () => {
     // Сортировка
     filtered = sortFlats(filtered)
     filteredFlats.value = filtered
-    displayedFlats.value = filtered.slice(0, displayedFlats.value.length ? displayedFlats.value.length : 5)
+    displayedFlats.value = filtered.slice(0, displayedFlats.value.length ? displayedFlats.value.length : 4)
   }
 
   const sortFlats = (flats: IFlat[]) => {

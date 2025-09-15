@@ -25,20 +25,24 @@ const formattedPrice = computed(() => {
       />
     </div>
 
-    <div class="flat-card__title">
-      {{ flat.title }}
-    </div>
+    <div class="flat-card__info">
+      <div class="flat-card__title">
+        {{ flat.title }}
+      </div>
 
-    <div class="flat-card__detail">
-      <span class="flat-card__detail-text">{{ flat.area }} м²</span>
-    </div>
+      <div class="flat-card__values">
+        <div class="flat-card__detail">
+          <span class="flat-card__detail-text">{{ flat.area }} м²</span>
+        </div>
 
-    <div class="flat-card__detail">
-      <span class="flat-card__detail-text">{{ flat.floor }}</span>
-    </div>
+        <div class="flat-card__detail">
+          <span class="flat-card__detail-text">{{ flat.floor }}</span>
+        </div>
 
-    <div class="flat-card__price">
-      {{ formattedPrice }}
+        <div class="flat-card__price">
+          {{ formattedPrice }}
+        </div>
+      </div>
     </div>
   </article>
 </template>
@@ -48,18 +52,28 @@ const formattedPrice = computed(() => {
   display: flex;
   justify-content: space-between;
   height: 100px;
-  gap: 24px;
   border-top: 2px solid #e5e7eb;
   padding-top: 24px;
   font-size: 16px;
 
+  &__info {
+    display: flex;
+    flex: 1.7;
+  }
+
+  &__values {
+    display: flex;
+    flex: 1.2;
+  }
+
   &__image-container {
+    display: flex;
     flex: 0.3;
     min-width: 0;
   }
 
   &__title {
-    flex: 1;
+    flex: 0.5;
     min-width: 0;
     line-height: 24px;
     font-weight: 500;
@@ -69,6 +83,30 @@ const formattedPrice = computed(() => {
     flex: 0.4;
     min-width: 0;
     font-weight: 400;
+  }
+
+  @media (max-width: 1024px) {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    flex-direction: row-reverse;
+    padding-top: 18px;
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-left: 16px;
+      flex: 1;
+    }
+
+    &__image-container {
+      flex: 0.8;
+      min-width: 0;
+      display: flex;
+      flex-direction: row-reverse;
+      padding-right: 16px;
+    }
+
   }
 }
 </style>

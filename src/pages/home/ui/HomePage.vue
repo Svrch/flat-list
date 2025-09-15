@@ -83,6 +83,10 @@ onMounted(() => {
     right: 55px;
     bottom: 55px;
   }
+
+  @media (max-width: 1024px) {
+    gap: 24px;
+  }
 }
 
 .flats-container {
@@ -101,6 +105,7 @@ onMounted(() => {
 
 .flats-filter-block {
   max-width: 440px;
+  min-width: 330px;
   padding: 12px;
   position: sticky;
   top: 0;

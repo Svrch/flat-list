@@ -73,7 +73,6 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
 <style scoped lang="scss">
 .flat-sort {
   display: flex;
-  gap: 24px;
   font-size: 16px;
   height: 36px;
   align-items: center;
@@ -87,7 +86,7 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
   }
 
   &__name {
-    flex: 1;
+    flex: 0.5;
     min-width: 0;
     font-weight: 500;
     color: #374151;
@@ -98,6 +97,16 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
     min-width: 0;
     font-weight: 500;
     color: #374151;
+  }
+
+  @media (max-width: 1024px) {
+    width: 300px;
+    &__plan {
+      display: none;
+    }
+    &__name {
+      display: none;
+    }
   }
 }
 

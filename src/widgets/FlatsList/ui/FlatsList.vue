@@ -11,18 +11,18 @@ const props = defineProps<{
 
 <template>
   <div class="flats-list">
-    <!-- Состояние когда нет квартир -->
+    <div class="flats-list__title">
+      Квартиры
+    </div>
     <div v-if="props.flats.length === 0" class="no-flats">
-      <p class="no-flats__title">
+      <p class="no-flats__no-data">
         Квартиры не найдены
       </p>
       <p class="no-flats__subtitle">
         Попробуйте изменить параметры фильтрации
       </p>
     </div>
-
-    <!-- Список квартир -->
-    <div v-else class="flats-list__grid">
+    <div v-else class="flats-list__list">
       <FlatSort :sort-options="sortOptions" />
       <div
         v-for="flat in props.flats"
@@ -37,28 +37,43 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .flats-list {
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
-  &__grid {
+
+  &__title {
+    font-size: 54px;
+    line-height: 55px;
+    font-weight: 500;
+  }
+
+  &__list {
     display: flex;
     flex-direction: column;
+
+    @media (max-width: 1024px) {
+      gap: 6px;
+    }
   }
+
 }
 
 .no-flats {
   text-align: center;
   padding: 3rem 1rem;
   color: #666;
-}
 
-.no-flats__title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
+  &__no-data {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
 
-.no-flats__subtitle {
-  font-size: 1.1rem;
-  opacity: 0.8;
+  &__subtitle {
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
 }
 </style>
