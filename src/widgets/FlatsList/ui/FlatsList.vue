@@ -37,6 +37,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .flats-list {
+  width: 100%;
   &__grid {
     display: flex;
     flex-direction: column;

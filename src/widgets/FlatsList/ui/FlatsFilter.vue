@@ -2,6 +2,7 @@
 import VueSlider from 'vue-3-slider-component'
 
 import { useFlatsStore } from '@/shared/store/flatsStore'
+import { UiButton } from '@/shared/components'
 
 const store = useFlatsStore()
 const { allFlats, filterState } = storeToRefs(store)
@@ -73,17 +74,17 @@ onMounted(() => {
         Количество комнат
       </h3>
       <div class="flats-filter__rooms">
-        <button
+        <UiButton
           v-for="room in roomOptions"
           :key="room"
-          class="flats-filter__room-btn"
-          :class="{
-            'flats-filter__room-btn--active': store.filterState.rooms.includes(room),
-          }"
+          only-icon="circle"
+          :class="{ 'flats-filter__room-btn--active': store.filterState.rooms.includes(room) }"
           @click="toggleRoom(room)"
         >
-          {{ room }}к
-        </button>
+          <div class="flats-filter__rooms-text">
+            {{ room }}к
+          </div>
+        </UiButton>
       </div>
     </div>
     <div class="flats-filter__section">
@@ -91,6 +92,20 @@ onMounted(() => {
         Стоимость квартиры, ₽
       </h3>
       <div class="flats-filter__slider">
+        <div class="flats-filter__slider-values">
+          <span>
+            от
+            <span class="flats-filter__slider-values-text">
+              {{ formatPrice(currentPriceRange[0]) }}
+            </span>
+          </span>
+          <span>
+            до
+            <span class="flats-filter__slider-values-text">
+              {{ formatPrice(currentPriceRange[1]) }}
+            </span>
+          </span>
+        </div>
         <VueSlider
           v-model="currentPriceRange"
           :min="priceRange[0]"
@@ -101,10 +116,6 @@ onMounted(() => {
           :lazy="true"
           @change="handlePriceChange"
         />
-        <div class="flats-filter__slider-values">
-          <span>{{ formatPrice(currentPriceRange[0]) }}</span>
-          <span>{{ formatPrice(currentPriceRange[1]) }}</span>
-        </div>
       </div>
     </div>
 
@@ -113,6 +124,20 @@ onMounted(() => {
         Площадь, м²
       </h3>
       <div class="flats-filter__slider">
+        <div class="flats-filter__slider-values">
+          <span>
+            от
+            <span class="flats-filter__slider-values-text">
+              {{ currentAreaRange[0] }} м²
+            </span>
+          </span>
+          <span>
+            до
+            <span class="flats-filter__slider-values-text">
+              {{ currentAreaRange[1] }} м²
+            </span>
+          </span>
+        </div>
         <VueSlider
           v-model="currentAreaRange"
           :min="areaRange[0]"
@@ -123,117 +148,76 @@ onMounted(() => {
           :lazy="true"
           @change="handleAreaChange"
         />
-        <div class="flats-filter__slider-values">
-          <span>{{ currentAreaRange[0] }} м²</span>
-          <span>{{ currentAreaRange[1] }} м²</span>
-        </div>
       </div>
     </div>
 
-    <button
-      class="flats-filter__reset"
+    <UiButton
       :disabled="!hasActiveFilters"
+      only-text
       @click="resetFilters"
     >
-      Сбросить параметры
-    </button>
+      <div class="flats-filter__reset">
+        Сбросить параметры ✖
+      </div>
+    </UiButton>
   </div>
 </template>
 
 <style scoped lang="scss">
 .flats-filter {
-  background: white;
-  padding: 24px;
+  background-color: rgba(197, 232, 198, 0.5);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-}
-
-.flats-filter__section {
-  margin-bottom: 24px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.flats-filter__title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.flats-filter__rooms {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
 
-.flats-filter__room-btn {
-  padding: 8px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
-  color: #374151;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: #3EB57C;
-    color: #3EB57C;
+  &__title {
+    color: #333;
   }
 
-  &--active {
-    background: #3EB57C;
-    border-color: #3EB57C;
+  &__rooms {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__room-btn--active {
+    background-color: #3EB57C;
     color: white;
-
-    &:hover {
-      background: #3EB57C;
-      color: #374151;
-    }
-  }
-}
-
-.flats-filter__slider {
-  margin-top: 16px;
-}
-
-.flats-filter__slider-values {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-top: 8px;
-}
-
-.flats-filter__reset {
-  width: 100%;
-  padding: 12px;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #374151;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 16px;
-
-  &:hover:not(:disabled) {
-    background: #e5e7eb;
-    color: #111827;
   }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  &__rooms-text {
+    font-weight: 400;
   }
-}
 
-:deep(.vue-slider) {
-  margin: 16px 0;
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__slider {
+    width: 95%;
+  }
+
+  &__slider-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 8px;
+  }
+
+  &__slider-values-text {
+    color: #333;
+    font-weight: 500;
+  }
+
+  &__reset {
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
 
 :deep(.vue-slider-rail) {

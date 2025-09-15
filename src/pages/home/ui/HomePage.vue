@@ -3,6 +3,7 @@ import { FlatsList } from '@/widgets/FlatsList'
 import { useFlatsStore } from '@/shared/store/flatsStore'
 import FlatsPagination from '@/widgets/FlatsList/ui/FlatsPagination.vue'
 import FlatsFilter from '@/widgets/FlatsList/ui/FlatsFilter.vue'
+import { ScrollTop } from '@/features/ScrollTop'
 
 const store = useFlatsStore()
 const { displayedFlats, isLoading, error, hasMoreFlats, sortOptions, filterState } = storeToRefs(store)
@@ -30,7 +31,7 @@ onMounted(() => {
   <div class="flats-page">
     <div class="flats-container">
       <!-- Состояние загрузки -->
-      <div v-if="isLoading && displayedFlats.length === 0" class="loading">
+      <div v-if="isLoading && displayedFlats.length === 0" class="flats-loading">
         Загрузка квартир...
       </div>
 
@@ -54,7 +55,7 @@ onMounted(() => {
         />
 
         <!-- Сообщение когда больше нет данных -->
-        <div v-else-if="displayedFlats.length > 0" class="no-more">
+        <div v-else-if="displayedFlats.length > 0" class="flats-no-more">
           Показаны все доступные квартиры
         </div>
       </template>
@@ -62,27 +63,51 @@ onMounted(() => {
     <div class="flats-filter-block">
       <FlatsFilter v-if="store.allFlats.length" :filter-state="filterState" />
     </div>
+    <div class="flats-page__scroll-top">
+      <ScrollTop target=".flats-page" />
+    </div>
   </div>
-<!--  <BackToTop /> -->
 </template>
 
 <style lang="scss" scoped>
 .flats-page {
   display: flex;
-  justify-content: center;
   gap: 48px;
-  padding: 48px;
-  height: calc(100vh - 96px);
+  height: calc(100vh - 48px);
+  justify-content: center;
   overflow-y: scroll;
+  width: 100%;
+
+  &__scroll-top {
+    position: fixed;
+    right: 55px;
+    bottom: 55px;
+  }
 }
 
 .flats-container {
+  width: 100%;
+  max-width: 1000px;
+  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   flex: 1;
-  max-width: 1440px;
+}
+
+.flats-loading {
+  font-size: 16px;
 }
 
 .flats-filter-block {
+  max-width: 440px;
+  padding: 12px;
   position: sticky;
   top: 0;
+  flex: 0.5;
+}
+
+.flats-no-more {
+  font-size: 16px;
 }
 </style>

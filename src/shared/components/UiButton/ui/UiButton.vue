@@ -15,7 +15,7 @@ export interface IButtonProps {
 const props = withDefaults(defineProps<IButtonProps>(), {
   flat: false,
   loading: false,
-  outline: true,
+  outline: false,
   disabled: false,
   onlyIcon: '',
   onlyText: false,
@@ -134,8 +134,7 @@ const buttonStyle = computed(() => {
 
   &--primary {
     color: #0B1739;
-    background-color: transparent;
-    box-shadow: 4px 8px 12px 0 rgba(234, 234, 234, 0.50);
+    background-color: white;
 
     &:hover {
       background-color: #e8e8e8;
