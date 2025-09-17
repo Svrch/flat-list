@@ -9,11 +9,13 @@ export interface IFlat {
 
 export interface IFilterState {
   rooms: number[]
-  priceRange: [number, number]
-  areaRange: [number, number]
+  priceRange: TNumbNumb
+  areaRange: TNumbNumb
 }
 
 export interface ISortOptions {
   field: 'price' | 'area' | 'floor'
   direction: 'asc' | 'desc'
 }
+
+export type TNumbNumb = [number, number]

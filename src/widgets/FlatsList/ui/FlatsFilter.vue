@@ -2,18 +2,20 @@
 import VueSlider from 'vue-3-slider-component'
 
 import { useFlatsStore } from '@/shared/store/flatsStore'
-import { UiButton } from '@/shared/components'
+import { UiButton } from '@/shared/components/UiButton'
+import { UiSlider } from '@/shared/components/UiSlider'
+import type { TNumbNumb } from '@/shared/types/flat.interface'
 
 const store = useFlatsStore()
 const { allFlats, filterState } = storeToRefs(store)
 
 const roomOptions = [1, 2, 3, 4]
 
-const priceRange = computed<[number, number]>(() => {
+const priceRange = computed<TNumbNumb>(() => {
   const prices = allFlats.value.map(flat => flat.price)
   return [Math.min(...prices), Math.max(...prices)]
 })
-const areaRange = computed<[number, number]>(() => {
+const areaRange = computed<TNumbNumb>(() => {
   const areas = allFlats.value.map(flat => flat.area)
   return [Math.min(...areas), Math.max(...areas)]
 })
@@ -22,10 +24,10 @@ const currentPriceRange = ref(priceRange.value)
 const currentAreaRange = ref(areaRange.value)
 
 // Обработчики для слайдеров
-const handlePriceChange = (values: [number, number]) => {
+const handlePriceChange = (values: TNumbNumb) => {
   store.updateFilter({ priceRange: values })
 }
-const handleAreaChange = (values: [number, number]) => {
+const handleAreaChange = (values: TNumbNumb) => {
   store.updateFilter({ areaRange: values })
 }
 
@@ -106,15 +108,13 @@ onMounted(() => {
             </span>
           </span>
         </div>
-        <VueSlider
+        <UiSlider
           v-model="currentPriceRange"
           :min="priceRange[0]"
           :max="priceRange[1]"
           :interval="100000"
-          :tooltip="'active'"
           :tooltip-formatter="formatPrice"
-          :lazy="true"
-          @change="handlePriceChange"
+          :on-change="handlePriceChange"
         />
       </div>
     </div>
@@ -138,15 +138,13 @@ onMounted(() => {
             </span>
           </span>
         </div>
-        <VueSlider
+        <UiSlider
           v-model="currentAreaRange"
           :min="areaRange[0]"
           :max="areaRange[1]"
           :interval="0.1"
-          :tooltip="'active'"
           :tooltip-formatter="formatArea"
-          :lazy="true"
-          @change="handleAreaChange"
+          :on-change="handleAreaChange"
         />
       </div>
     </div>
@@ -222,38 +220,5 @@ onMounted(() => {
       color: #3EB57C;
     }
   }
-}
-
-:deep(.vue-slider-rail) {
-  background-color: #f3f4f6;
-  border-radius: 4px;
-}
-
-:deep(.vue-slider-process) {
-  background-color: #3EB57C;
-  border-radius: 4px;
-}
-
-:deep(.vue-slider-dot-tooltip-inner) {
-  border: 2px solid #3EB57C;
-  background: #3EB57C;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    background: #3EB57C;
-  }
-}
-
-:deep(.vue-slider-tooltip) {
-  background-color: #3EB57C;
-  border-color: #3EB57C;
-
-  &::before {
-    border-top-color: #3EB57C;
-  }
-}
-
-:deep(.vue-slider-dot-handle-focus) {
-  box-shadow: 0 0 1px 2px #3EB57C
 }
 </style>

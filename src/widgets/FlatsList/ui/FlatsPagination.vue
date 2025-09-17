@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiButton } from '@/shared/components'
+import { UiButton } from '@/shared/components/UiButton'
 
 defineProps<{ loading?: boolean }>()
 

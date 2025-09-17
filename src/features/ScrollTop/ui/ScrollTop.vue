@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { UiButton } from '@/shared/components'
+import { UiButton } from '@/shared/components/UiButton'
 
 interface Props {
   target?: string
