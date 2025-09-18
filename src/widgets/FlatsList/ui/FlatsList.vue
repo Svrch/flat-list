@@ -5,8 +5,32 @@ import FlatCard from '@/widgets/FlatsList/ui/FlatCard.vue'
 
 const props = defineProps<{
   flats: IFlat[]
-  sortOptions: ISortOptions
 }>()
+
+const sortOptionsModel = defineModel<ISortOptions>('sortOptions', {
+  default: () => ({ direction: 'asc', field: 'price' }),
+})
+
+const sortedFlats = computed<IFlat[]>(() => {
+  if (!props.flats?.length) return []
+
+  return [...props.flats].sort((a, b) => {
+    let aValue: number, bValue: number
+
+    if (sortOptionsModel.value.field === 'floor') {
+      aValue = parseInt(a.floor.split(' из ')[0])
+      bValue = parseInt(b.floor.split(' из ')[0])
+    }
+    else {
+      aValue = a[sortOptionsModel.value.field]
+      bValue = b[sortOptionsModel.value.field]
+    }
+
+    return sortOptionsModel.value.direction === 'asc'
+      ? aValue - bValue
+      : bValue - aValue
+  })
+})
 </script>
 
 <template>
@@ -23,9 +47,9 @@ const props = defineProps<{
       </p>
     </div>
     <div v-else class="flats-list__list">
-      <FlatSort :sort-options="sortOptions" />
+      <FlatSort v-model="sortOptionsModel" />
       <div
-        v-for="flat in props.flats"
+        v-for="flat in sortedFlats"
         :key="flat.id"
         class="flats-list__item"
       >

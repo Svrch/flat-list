@@ -1,26 +1,56 @@
 <script setup lang="ts">
 import { FlatsList } from '@/widgets/FlatsList'
 import { useFlatsStore } from '@/shared/store/flatsStore'
-import FlatsPagination from '@/widgets/FlatsList/ui/FlatsPagination.vue'
-import FlatsFilter from '@/widgets/FlatsList/ui/FlatsFilter.vue'
 import { ScrollTop } from '@/features/ScrollTop'
+import { Filter } from '@/features/Filter'
+import type { IFilterState, IFlat, TNumbNumb } from '@/shared/types/flat.interface'
+
+const filterModel = ref<IFilterState>({
+  priceRange: [0, 30000000],
+  areaRange: [0, 200],
+  rooms: [1, 2, 3],
+})
 
 const store = useFlatsStore()
-const { displayedFlats, isLoading, error, hasMoreFlats, sortOptions, filterState } = storeToRefs(store)
+const { isLoading, allFlats } = storeToRefs(store)
 
-const { loadMore } = store
-
-const isLoadingPagination = ref(false)
-
-const handleLoadMore = async () => {
-  isLoadingPagination.value = true
-  try {
-    await loadMore()
+const filteredFlats = computed<IFlat[]>(() => {
+  if (!allFlats.value || !filterModel.value) {
+    return []
   }
-  finally {
-    isLoadingPagination.value = false
+
+  let filtered = [...allFlats.value]
+
+  // Фильтрация по комнатам
+  if (filterModel.value.rooms.length > 0) {
+    filtered = filtered.filter(flat =>
+      filterModel.value!.rooms.includes(flat.rooms),
+    )
   }
-}
+
+  // Фильтрация по цене
+  filtered = filtered.filter(flat =>
+    flat.price >= filterModel.value!.priceRange[0]
+    && flat.price <= filterModel.value!.priceRange[1],
+  )
+
+  // Фильтрация по площади
+  filtered = filtered.filter(flat =>
+    flat.area >= filterModel.value!.areaRange[0]
+    && flat.area <= filterModel.value!.areaRange[1],
+  )
+
+  return filtered
+})
+
+const priceRange = computed<TNumbNumb>(() => {
+  const prices = allFlats.value.map(flat => flat.price)
+  return [Math.min(...prices), Math.max(...prices)]
+})
+const areaRange = computed<TNumbNumb>(() => {
+  const areas = allFlats.value.map(flat => flat.area)
+  return [Math.min(...areas), Math.max(...areas)]
+})
 
 onMounted(() => {
   store.fetchFlats()
@@ -31,37 +61,22 @@ onMounted(() => {
   <div class="flats-page">
     <div class="flats-container">
       <!-- Состояние загрузки -->
-      <div v-if="isLoading && displayedFlats.length === 0" class="flats-loading">
+      <div v-if="isLoading && filteredFlats.length === 0" class="flats-loading">
         Загрузка квартир...
-      </div>
-
-      <!-- Состояние ошибки -->
-      <div v-else-if="error" class="error">
-        {{ error }}
       </div>
 
       <!-- Данные загружены -->
       <template v-else>
-        <FlatsList
-          :flats="displayedFlats"
-          :sort-options="sortOptions"
-        />
-
-        <!-- Кнопка загрузки -->
-        <FlatsPagination
-          v-if="hasMoreFlats"
-          :loading="isLoadingPagination"
-          @load-more="handleLoadMore"
-        />
-
-        <!-- Сообщение когда больше нет данных -->
-        <div v-else-if="displayedFlats.length > 0" class="flats-no-more">
-          Показаны все доступные квартиры
-        </div>
+        <FlatsList :flats="filteredFlats" />
       </template>
     </div>
-    <div class="flats-filter-block">
-      <FlatsFilter v-if="store.allFlats.length" :filter-state="filterState" />
+    <div v-if="allFlats.length" class="flats-filter-block">
+      <Filter
+        v-model="filterModel"
+        :rooms="[1, 2, 3, 4]"
+        :price-range="priceRange"
+        :area-range="areaRange"
+      />
     </div>
     <div class="flats-page__scroll-top">
       <ScrollTop target=".flats-page" />

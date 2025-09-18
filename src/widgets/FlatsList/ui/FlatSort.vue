@@ -1,33 +1,28 @@
 <script setup lang="ts">
 import type { ISortOptions } from '@/shared/types/flat.interface'
-import { useFlatsStore } from '@/shared/store/flatsStore'
 
-const store = useFlatsStore()
-
-const props = defineProps<{
-  sortOptions: ISortOptions
-}>()
+const model = defineModel<ISortOptions>({
+  default: {
+    direction: 'asc',
+    field: 'price',
+  },
+})
 
 const handleSort = (field: 'price' | 'area' | 'floor') => {
-  if (props.sortOptions.field === field) {
+  if (model.value.field === field) {
     // Если уже сортируем по этому полю, меняем направление
-    store.updateSort({
-      direction: props.sortOptions.direction === 'asc' ? 'desc' : 'asc',
-    })
+    model.value = { ...model.value, direction: model.value.direction === 'asc' ? 'desc' : 'asc' }
   }
   else {
     // Если новое поле, сортируем по возрастанию
-    store.updateSort({
-      field,
-      direction: 'asc',
-    })
+    model.value = { field: field, direction: 'asc' }
   }
 }
 
 const getSortIcon = (field: 'price' | 'area' | 'floor') => {
-  if (props.sortOptions.field !== field) return '↕'
+  if (model.value.field !== field) return '↕'
 
-  return props.sortOptions.direction === 'asc' ? '↑' : '↓'
+  return model.value.direction === 'asc' ? '↑' : '↓'
 }
 </script>
 
@@ -43,7 +38,7 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
 
     <div
       class="flat-sort__area sortable"
-      :class="{ 'sortable--active': sortOptions.field === 'area' }"
+      :class="{ 'sortable--active': model.field === 'area' }"
       @click="handleSort('area')"
     >
       <span class="flat-sort__detail-text">S, м²</span>
@@ -52,7 +47,7 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
 
     <div
       class="flat-sort__floor sortable"
-      :class="{ 'sortable--active': sortOptions.field === 'floor' }"
+      :class="{ 'sortable--active': model.field === 'floor' }"
       @click="handleSort('floor')"
     >
       <span class="flat-sort__detail-text">Этаж</span>
@@ -61,7 +56,7 @@ const getSortIcon = (field: 'price' | 'area' | 'floor') => {
 
     <div
       class="flat-sort__price sortable"
-      :class="{ 'sortable--active': sortOptions.field === 'price' }"
+      :class="{ 'sortable--active': model.field === 'price' }"
       @click="handleSort('price')"
     >
       <span class="flat-sort__detail-text">Цена, ₽</span>

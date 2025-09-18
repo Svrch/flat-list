@@ -1,47 +1,51 @@
 <script setup lang="ts">
-import VueSlider from 'vue-3-slider-component'
-
-import { useFlatsStore } from '@/shared/store/flatsStore'
 import { UiButton } from '@/shared/components/UiButton'
 import { UiSlider } from '@/shared/components/UiSlider'
-import type { TNumbNumb } from '@/shared/types/flat.interface'
+import type { IFilterState, TNumbNumb } from '@/shared/types/flat.interface'
+import type { TFilterProps } from '@/features/Filter/types'
 
-const store = useFlatsStore()
-const { allFlats, filterState } = storeToRefs(store)
-
-const roomOptions = [1, 2, 3, 4]
-
-const priceRange = computed<TNumbNumb>(() => {
-  const prices = allFlats.value.map(flat => flat.price)
-  return [Math.min(...prices), Math.max(...prices)]
-})
-const areaRange = computed<TNumbNumb>(() => {
-  const areas = allFlats.value.map(flat => flat.area)
-  return [Math.min(...areas), Math.max(...areas)]
+const props = withDefaults(defineProps<TFilterProps>(), {
+  priceRange: (): TNumbNumb => [0, 300000],
+  areaRange: (): TNumbNumb => [0, 100],
+  rooms: (): number[] => [1, 2, 3],
 })
 
-const currentPriceRange = ref(priceRange.value)
-const currentAreaRange = ref(areaRange.value)
+const model = defineModel<IFilterState>({
+  default: () => ({
+    priceRange: [0, 300000],
+    areaRange: [0, 100],
+    rooms: [1, 2, 3],
+  }),
+})
+
+const currentPriceRange = ref<TNumbNumb>(props.priceRange)
+const currentAreaRange = ref<TNumbNumb>(props.areaRange)
+
+const updateModel = (newModel: Partial<IFilterState>) => {
+  model.value = { ...model.value, ...newModel }
+}
 
 // Обработчики для слайдеров
 const handlePriceChange = (values: TNumbNumb) => {
-  store.updateFilter({ priceRange: values })
+  updateModel({ priceRange: values })
 }
 const handleAreaChange = (values: TNumbNumb) => {
-  store.updateFilter({ areaRange: values })
+  updateModel({ areaRange: values })
 }
 
 const toggleRoom = (room: number) => {
-  const newRooms = filterState.value.rooms.includes(room)
-    ? filterState.value.rooms.filter(r => r !== room)
-    : [...filterState.value.rooms, room]
-  store.updateFilter({ rooms: newRooms })
+  const currentRooms = model.value.rooms || []
+  const newRooms = currentRooms.includes(room)
+    ? currentRooms.filter(r => r !== room)
+    : [...currentRooms, room]
+
+  updateModel({ rooms: newRooms })
 }
 
 const resetFilters = () => {
-  currentPriceRange.value = priceRange.value
-  currentAreaRange.value = areaRange.value
-  store.updateFilter({ rooms: [], areaRange: areaRange.value, priceRange: priceRange.value })
+  currentPriceRange.value = props.priceRange
+  currentAreaRange.value = props.areaRange
+  updateModel({ rooms: [], areaRange: props.areaRange, priceRange: props.priceRange })
 }
 
 const formatPrice = (price: number) => {
@@ -52,20 +56,20 @@ const formatPrice = (price: number) => {
 const formatArea = (v: number) => v.toFixed(1) + ' м²'
 
 const hasActiveFilters = computed(() => {
-  const [minPrice, maxPrice] = priceRange.value
-  const [minArea, maxArea] = areaRange.value
+  const [minPrice, maxPrice] = props.priceRange
+  const [minArea, maxArea] = props.areaRange
 
   return (
-    filterState.value.rooms.length > 0
-    || filterState.value.priceRange[0] !== minPrice
-    || filterState.value.priceRange[1] !== maxPrice
-    || filterState.value.areaRange[0] !== minArea
-    || filterState.value.areaRange[1] !== maxArea
+    model.value.rooms.length > 0
+    || model.value.priceRange[0] !== minPrice
+    || model.value.priceRange[1] !== maxPrice
+    || model.value.areaRange[0] !== minArea
+    || model.value.areaRange[1] !== maxArea
   )
 })
 
 onMounted(() => {
-  store.updateFilter({ rooms: [], areaRange: areaRange.value, priceRange: priceRange.value })
+  updateModel({ rooms: [], areaRange: props.areaRange, priceRange: props.priceRange })
 })
 </script>
 
@@ -77,10 +81,10 @@ onMounted(() => {
       </h3>
       <div class="flats-filter__rooms">
         <UiButton
-          v-for="room in roomOptions"
+          v-for="room in props.rooms"
           :key="room"
           only-icon="circle"
-          :class="{ 'flats-filter__room-btn--active': store.filterState.rooms.includes(room) }"
+          :class="{ 'flats-filter__room-btn--active': model.rooms.includes(room) }"
           @click="toggleRoom(room)"
         >
           <div class="flats-filter__rooms-text">
